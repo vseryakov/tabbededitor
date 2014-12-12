@@ -16,12 +16,14 @@ Provide the QTC sources and where it produced its plugins, for example
  - Copy the plugin into Plugins of the installed Qt Creator
  - Update paths using this script
 
+
 	#!/bin/bash
 	rpath=`qmake -v|grep Using|awk {'print $6}'`
 	for lib in `otool -L $1 |grep "$2" | awk '{print $1}'`; do
-  	  mod=`echo $lib | awk -v v="$rpath" '{print "@executable_path/../Frameworks"substr($1,length(v)+1)}'`
-    	  install_name_tool -change $lib $mod $1
+  	   mod=`echo $lib | awk -v v="$rpath" '{print "@executable_path/../Frameworks"substr($1,length(v)+1)}'`
+    	   install_name_tool -change $lib $mod $1
 	done
+
 
 # Author
 Vlad Seryakov
