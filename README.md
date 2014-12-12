@@ -14,13 +14,11 @@ Provide the QTC sources and where it produced its plugins, for example
    - git checkout 3.3
    - mkdir build && cd build && qmake -r ../qtcreator.pro
  - Copy the plugin into Plugins of the installed Qt Creator
- - Update paths using this shell script
+ - Update paths using this shell script on Mac OS X:
 
-        rpath=`qmake -v|grep Using|awk {'print $6}'`
-	    for lib in `otool -L $1 |grep "$2" | awk '{print $1}'`; do
-  	        mod=`echo $lib | awk -v v="$rpath" '{print "@executable_path/../Frameworks"substr($1,length(v)+1)}'`
-    	    install_name_tool -change $lib $mod $1
-        done
+	    f=libTabbedEditor.dylib	
+	    q=`qmake -v|grep Using|awk {'print $6}'`
+	    for lib in `otool -L $f | grep $q | awk '{print $1}'`; do mod=`echo $lib | awk -v q="$q" '{print "@executable_path/../Frameworks"substr($1,length(q)+1)}'`; install_name_tool -change $lib $mod $f; done
 
 
 # Author
