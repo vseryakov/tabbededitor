@@ -6,14 +6,15 @@ This is a fork of the project http://sourceforge.net/projects/tabbededitor/
 
 Provide the QTC sources and where it produced its plugins, for example
 
-	qmake QTC_SOURCE=../QtCreator IDE_BUILD_TREE=$HOME/Developer/Qt/qtcreator-Desktop_Qt_5_4_0_clang_64bit-Release/
+        qmake QTC_SOURCE=../QtCreator IDE_BUILD_TREE=../QtCreator/build
 
-# Add to installed enterprise version
+# Add to installed Qt Enterprise version
 
  - Compile Qt Creator form sources with the same version as installed 
+   - git clone https://gitorious.org/qt-creator/qt-creator.git QtCreator
    - git checkout 3.3
    - mkdir build && cd build && qmake -r ../qtcreator.pro
- - Copy the plugin into Plugins of the installed Qt Creator
+ - Compile and copy the plugin into Plugins/ of the installed Qt Creator app
  - Update paths using this shell script on Mac OS X:
 
 	    f=libTabbedEditor.dylib	
