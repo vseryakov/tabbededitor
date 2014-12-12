@@ -18,7 +18,7 @@ Provide the QTC sources and where it produced its plugins, for example
 
 	    f=libTabbedEditor.dylib	
 	    q=`qmake -v|grep Using|awk {'print $6}'`
-	    for lib in `otool -L $f | grep $q | awk '{print $1}'`; do mod=`echo $lib | awk -v q="$q" '{print "@executable_path/../Frameworks"substr($1,length(q)+1)}'`; install_name_tool -change $lib $mod $f; done
+	    for l in `otool -L $f | grep $q | awk '{print $1}'`; do p=`echo $l | awk -v q="$q" '{print "@executable_path/../Frameworks"substr($1,length(q)+1)}'`; install_name_tool -change $l $p $f; done
 
 
 # Author
