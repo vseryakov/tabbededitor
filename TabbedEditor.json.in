@@ -1,0 +1,12 @@
+{
+    \"Name\" : \"TabbedEditor\",
+    \"Version\" : \"$$QTCREATOR_VERSION\",
+    \"CompatVersion\" : \"$$QTCREATOR_COMPAT_VERSION\",
+    \"Experimental\" : true,
+    \"Vendor\" : \"Vlad Seryakov\",
+    \"Copyright\" : \"(C) 2014 Vlad Seryakov\",
+    \"License\" : [ \"LGPL 2 or MIT license\" ], 
+    \"Description\" : \"Plugin add tabs for QtCreator. Based on SNA Soft plugin\",
+    \"Url\" : \"https://github.com/vseryakov/tabbededitor\",
+    $$dependencyList
+}
