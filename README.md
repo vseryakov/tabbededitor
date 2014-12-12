@@ -18,7 +18,7 @@ Provide the QTC sources and where it produced its plugins, for example
  - Update paths using this shell script on Mac OS X:
 
 	    f=libTabbedEditor.dylib	
-	    q=`qmake -v|grep Using|awk {'print $6}'`
+	    q=(cd `qmake -v|grep Using|awk {'print $6}'` && pwd -P)
 	    for l in `otool -L $f | grep $q | awk '{print $1}'`; do p=`echo $l | awk -v q="$q" '{print "@executable_path/../Frameworks"substr($1,length(q)+1)}'`; install_name_tool -change $l $p $f; done
 
 
