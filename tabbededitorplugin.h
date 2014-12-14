@@ -19,27 +19,23 @@ class TabbedEditorWidget : public QWidget
 public:
     TabbedEditorWidget(QWidget * parent = 0);
     ~TabbedEditorWidget();
-
-    QWidget *getTabWidget();
-    Core::IEditor *getEditor(QWidget *tab);
+    void shutdown();
+    QTabWidget *getTabWidget();
+    Core::IEditor *getEditor(int index);
     QWidget *getTab(Core::IEditor *editor);
 
-    bool isEditorWdiget(QObject *obj);
-
 private:
+    bool restored;
     QTabWidget *tabWidget;
-    QMap<QWidget*, Core::IEditor*> tabsEditors;
-    QList<QShortcut*> tabShortcuts;
 
 private slots:
     void updateCurrentTab(Core::IEditor* editor);
-    void handleCurrentChanged(int index);
     void handleEditorOpened(Core::IEditor* editor);
     void handlerEditorClosed(QList<Core::IEditor*> editors);
+    void handleTabBarClicked(int index);
     void handleTabCloseRequested(int index);
-
-    void selectTabAction();
-    void updateTabText();
+    void handleDocumentChanged();
+    void handleTabMoved();
 };
 
 class TabbedEditorPlugin : public ExtensionSystem::IPlugin
@@ -50,9 +46,6 @@ class TabbedEditorPlugin : public ExtensionSystem::IPlugin
 private:
     TabbedEditorWidget *tabbedWidget;
     QFrame *backgroundFrame;
-    bool styleUpdatedToBaseColor;
-    Core::EditorManager *em;
-    QString getQssStringFromColor(const QColor &color);
 
 public:
     TabbedEditorPlugin();
@@ -60,10 +53,11 @@ public:
 
     bool initialize(const QStringList &arguments, QString *errorString);
     void extensionsInitialized();
+    bool delayedInitialize();
     ShutdownFlag aboutToShutdown();
+
 private slots:
-    QString getStylesheetPatternFromFile(const QString &filepath);
-    void updateStyleToBaseColor();
+    void toggleTabbar();
 };
 
 } // namespace Internal

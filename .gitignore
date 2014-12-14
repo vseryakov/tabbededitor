@@ -10,7 +10,6 @@
 *.so
 *.so.*
 *_pch.h.cpp
-*_resource.rc
 *.qm
 .#*
 *.*#
@@ -38,4 +37,3 @@ Thumbs.db
 .*.swp
 build
 bin
-
