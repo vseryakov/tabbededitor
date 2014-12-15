@@ -187,8 +187,9 @@ void TabbedEditorWidget::handleDocumentChanged()
 {
     if (!tabWidget) return;
     Core::IEditor *editor = this->getEditor(tabWidget->currentIndex());
-    if (!editor || !editor->document()->isModified()) return;
-    QString title = editor->document()->displayName() + QString::fromUtf8("*");
+    if (!editor) return;
+    QString title = editor->document()->displayName();
+    if (editor->document()->isModified()) title += QString::fromUtf8("*");
     tabWidget->setTabText(tabWidget->currentIndex(), title);
 }
 
