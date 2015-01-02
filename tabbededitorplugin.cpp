@@ -278,8 +278,13 @@ void TabbedEditorWidget::handleTabCloseRequested(int index)
             }
         }
     }
-    tabWidget->removeTab(index);
-    Core::EditorManager::instance()->closeEditors(editors);
+    if (editors.count()) {
+        Core::EditorManager::instance()->closeEditors(editors);
+    } else {
+        QWidget *tab = tabWidget->widget(index);
+        tabWidget->removeTab(index);
+        tab->deleteLater();
+    }
 }
 
 QTabWidget *TabbedEditorWidget::getTabWidget()
