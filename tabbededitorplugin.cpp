@@ -174,6 +174,7 @@ void TabbedEditorWidget::handleTabMoved()
     QStringList tabs;
     for (int i = 0; i < tabWidget->count(); i++) tabs << tabWidget->tabToolTip(i);
     Core::ICore::settings()->setValue(QLatin1String("TabbedEditor/tabs"), tabs.join(QLatin1String("|")));
+    Core::ICore::settings()->sync();
 }
 
 void TabbedEditorWidget::updateCurrentTab(Core::IEditor *editor)
