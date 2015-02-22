@@ -203,8 +203,8 @@ void TabbedEditorWidget::handleTabBarClicked(int index)
     } else {
         disconnect(Core::EditorManager::instance(), SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(handleEditorOpened(Core::IEditor*)));
         foreach (Core::DocumentModel::Entry *entry, Core::DocumentModel::entries()) {
-            if (entry->fileName() == tabWidget->tabToolTip(index)) {
-                Core::IEditor *editor = Core::EditorManager::openEditor(entry->fileName(), entry->id());
+            if (entry->fileName().toString() == tabWidget->tabToolTip(index)) {
+                Core::IEditor *editor = Core::EditorManager::openEditor(entry->fileName().toString(), entry->id());
                 if (!editor) break;
                 break;
             }
@@ -223,13 +223,13 @@ void TabbedEditorWidget::handleEditorOpened(Core::IEditor *editor)
         QStringList sorted = Core::ICore::settings()->value(QLatin1String("TabbedEditor/tabs")).toString().split(QLatin1String("|"));
         QList<TabEntry> tabs;
         foreach (Core::DocumentModel::Entry *entry, Core::DocumentModel::entries()) {
-            tabs << TabEntry(sorted.indexOf(entry->fileName()), entry);
+            tabs << TabEntry(sorted.indexOf(entry->fileName().toString()), entry);
         }
         qSort(tabs.begin(), tabs.end(), entryLessThan);
         foreach(TabEntry entry, tabs) {
             QWidget *tab = new QWidget();
             tabWidget->addTab(tab, entry.entry->displayName());
-            tabWidget->setTabToolTip(tabWidget->count() - 1, entry.entry->fileName());
+            tabWidget->setTabToolTip(tabWidget->count() - 1, entry.entry->fileName().toString());
         }
         return;
     }
@@ -241,7 +241,7 @@ void TabbedEditorWidget::handleEditorOpened(Core::IEditor *editor)
     }
     // No tab by editor, check by file path
     for (int i = 0; i < tabWidget->count(); i++) {
-        if (tabWidget->tabToolTip(i) == editor->document()->filePath()) {
+        if (tabWidget->tabToolTip(i) == editor->document()->filePath().toString()) {
             tabWidget->setCurrentIndex(i);
             return;
         }
@@ -249,7 +249,7 @@ void TabbedEditorWidget::handleEditorOpened(Core::IEditor *editor)
     // Completely new editor, create a new tab
     tab = new QWidget();
     tabWidget->addTab(tab, editor->document()->displayName());
-    tabWidget->setTabToolTip(tabWidget->count() - 1, editor->document()->filePath());
+    tabWidget->setTabToolTip(tabWidget->count() - 1, editor->document()->filePath().toString());
     handleTabMoved();
 }
 
@@ -273,8 +273,8 @@ void TabbedEditorWidget::handleTabCloseRequested(int index)
         editors << editor;
     } else {
         foreach (Core::DocumentModel::Entry *entry, Core::DocumentModel::entries()) {
-            if (entry->fileName() == tabWidget->tabToolTip(index)) {
-                editor = Core::EditorManager::openEditor(entry->fileName(), entry->id(), Core::EditorManager::DoNotChangeCurrentEditor|Core::EditorManager::DoNotMakeVisible);
+            if (entry->fileName().toString() == tabWidget->tabToolTip(index)) {
+                editor = Core::EditorManager::openEditor(entry->fileName().toString(), entry->id(), Core::EditorManager::DoNotChangeCurrentEditor|Core::EditorManager::DoNotMakeVisible);
                 if (editor) editors << editor;
             }
         }
@@ -304,7 +304,7 @@ QWidget *TabbedEditorWidget::getTab(Core::IEditor *editor)
 {
     if (!editor || !editor->document()) return 0;
     for (int i = 0; i < tabWidget->count(); i++) {
-        if (editor->document()->filePath() == tabWidget->tabToolTip(i)) return tabWidget->widget(i);
+        if (editor->document()->filePath().toString() == tabWidget->tabToolTip(i)) return tabWidget->widget(i);
     }
     return 0;
 }
