@@ -53,8 +53,6 @@ bool TabbedEditorPlugin::initialize(const QStringList &arguments, QString *error
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
 
-    connect(Core::EditorManager::instance(), SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(updateStyleToBaseColor()));
-
     backgroundFrame = new QFrame();
     tabbedWidget = new TabbedEditorWidget(backgroundFrame);
 
@@ -262,6 +260,7 @@ void TabbedEditorWidget::handlerEditorClosed(QList<Core::IEditor *> editors)
         if (tabWidget->indexOf(tab) > -1) tabWidget->removeTab(tabWidget->indexOf(tab));
         tab->deleteLater();
     }
+    handleTabMoved();
 }
 
 void TabbedEditorWidget::handleTabCloseRequested(int index)
