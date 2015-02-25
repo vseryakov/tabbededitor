@@ -55,7 +55,6 @@ bool TabbedEditorPlugin::initialize(const QStringList &arguments, QString *error
 
     backgroundFrame = new QFrame();
     tabbedWidget = new TabbedEditorWidget(backgroundFrame);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -115,18 +114,7 @@ ExtensionSystem::IPlugin::ShutdownFlag TabbedEditorPlugin::aboutToShutdown()
     return SynchronousShutdown;
 }
 
-struct TabEntry {
-    TabEntry(int i, Core::DocumentModel::Entry *e): index(i), entry(e) {}
-    int index;
-    Core::DocumentModel::Entry *entry;
-};
-
-static bool entryLessThan(const TabEntry &e1, const TabEntry &e2)
-{
-     return e1.index < e2.index;
-}
-
-TabbedEditorWidget::TabbedEditorWidget(QWidget *parent):QWidget(parent), restored(0)
+TabbedEditorWidget::TabbedEditorWidget(QWidget *parent):QWidget(parent)
 {
     tabWidget = new QTabWidget(this);
 
@@ -142,6 +130,15 @@ TabbedEditorWidget::TabbedEditorWidget(QWidget *parent):QWidget(parent), restore
     tabWidget->tabBar()->setContentsMargins(0, 0, 0, 0);
     tabWidget->tabBar()->setBaseSize(0, 0);
     tabWidget->tabBar()->setDrawBase(false);
+
+    if (!Core::ICore::settings()->group().isEmpty()) Core::ICore::settings()->endGroup();
+    QStringList tabs = Core::ICore::settings()->value(QLatin1String("TabbedEditor/tabs")).toString().split(QLatin1String("|"));
+    foreach(QString file, tabs) {
+        if (!file.size()) continue;
+        QWidget *tab = new QWidget();
+        tabWidget->addTab(tab, QFileInfo(file).fileName());
+        tabWidget->setTabToolTip(tabWidget->count() - 1, file);
+    }
 
     connect(Core::EditorManager::instance(), SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(handleEditorOpened(Core::IEditor*)));
     connect(Core::EditorManager::instance(), SIGNAL(currentDocumentStateChanged()), this, SLOT(handleDocumentChanged()));
@@ -171,6 +168,7 @@ void TabbedEditorWidget::handleTabMoved()
 
     QStringList tabs;
     for (int i = 0; i < tabWidget->count(); i++) tabs << tabWidget->tabToolTip(i);
+    if (!Core::ICore::settings()->group().isEmpty()) Core::ICore::settings()->endGroup();
     Core::ICore::settings()->setValue(QLatin1String("TabbedEditor/tabs"), tabs.join(QLatin1String("|")));
     Core::ICore::settings()->sync();
 }
@@ -215,23 +213,6 @@ void TabbedEditorWidget::handleEditorOpened(Core::IEditor *editor)
 {
     if (!tabWidget) return;
 
-    // Add editors from the model which are not present in the tabbar yet
-    if (!restored) {
-        restored = true;
-        QStringList sorted = Core::ICore::settings()->value(QLatin1String("TabbedEditor/tabs")).toString().split(QLatin1String("|"));
-        QList<TabEntry> tabs;
-        foreach (Core::DocumentModel::Entry *entry, Core::DocumentModel::entries()) {
-            tabs << TabEntry(sorted.indexOf(entry->fileName().toString()), entry);
-        }
-        qSort(tabs.begin(), tabs.end(), entryLessThan);
-        foreach(TabEntry entry, tabs) {
-            QWidget *tab = new QWidget();
-            tabWidget->addTab(tab, entry.entry->displayName());
-            tabWidget->setTabToolTip(tabWidget->count() - 1, entry.entry->fileName().toString());
-        }
-        return;
-    }
-
     QWidget *tab = getTab(editor);
     if (tab) {
         tabWidget->setCurrentWidget(tab);
@@ -260,7 +241,6 @@ void TabbedEditorWidget::handlerEditorClosed(QList<Core::IEditor *> editors)
         if (tabWidget->indexOf(tab) > -1) tabWidget->removeTab(tabWidget->indexOf(tab));
         tab->deleteLater();
     }
-    handleTabMoved();
 }
 
 void TabbedEditorWidget::handleTabCloseRequested(int index)

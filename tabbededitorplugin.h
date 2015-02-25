@@ -25,7 +25,6 @@ public:
     QWidget *getTab(Core::IEditor *editor);
 
 private:
-    bool restored;
     QTabWidget *tabWidget;
 
 private slots:
