@@ -197,16 +197,16 @@ void TabbedEditorWidget::handleTabBarClicked(int index)
     if (editor) {
         Core::EditorManager::instance()->activateEditor(editor);
     } else {
-        disconnect(Core::EditorManager::instance(), SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(handleEditorOpened(Core::IEditor*)));
         foreach (Core::DocumentModel::Entry *entry, Core::DocumentModel::entries()) {
             if (entry->fileName().toString() == tabWidget->tabToolTip(index)) {
-                Core::IEditor *editor = Core::EditorManager::openEditor(entry->fileName().toString(), entry->id());
-                if (!editor) break;
-                break;
+                disconnect(Core::EditorManager::instance(), SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(handleEditorOpened(Core::IEditor*)));
+                Core::EditorManager::openEditor(entry->fileName().toString(), entry->id());
+                connect(Core::EditorManager::instance(), SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(handleEditorOpened(Core::IEditor*)));
+                return;
             }
         }
-        connect(Core::EditorManager::instance(), SIGNAL(editorOpened(Core::IEditor*)), this, SLOT(handleEditorOpened(Core::IEditor*)));
     }
+    Core::EditorManager::openEditor(tabWidget->tabToolTip(index));
 }
 
 void TabbedEditorWidget::handleEditorOpened(Core::IEditor *editor)
