@@ -1,6 +1,13 @@
 # Tabbed Editor for Qt Creator 3.x
 
-This is a fork of the project http://sourceforge.net/projects/tabbededitor/
+This started as a fork of the project http://sourceforge.net/projects/tabbededitor/
+but has been rewritten completely since then.
+
+Features:
+ - Adds only one extra line below the menubar
+ - Save/restore tabs in the same order between restarts
+ - Can be shown/hidden from the menu without restarts
+ - Keeps itself in sync with the open editors
 
 # Build
 
