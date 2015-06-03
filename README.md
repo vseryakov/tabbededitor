@@ -13,7 +13,7 @@ Features:
 
 Provide the QTC sources and where it produced its plugins, for example
 
-        qmake QTC_SOURCE=../QtCreator IDE_BUILD_TREE=../QtCreator/build
+        qmake QTC_SOURCE=../QtCreator IDE_BUILD_TREE=../QtCreator
 
 # Add to installed Qt Enterprise version
 
